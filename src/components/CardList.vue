@@ -11,7 +11,7 @@ defineProps({
 
 
 <template>
-  <div class="content">
+  <div class="content" >
     <Card
         v-for="character in characters"
         :key="character.id"
@@ -31,6 +31,6 @@ defineProps({
   grid-template-rows: 1fr;
   gap: 30px;
   justify-content: center;
-  padding: 72px 0;
+  padding:30px 0 72px;
 }
 </style>

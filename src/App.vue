@@ -1,26 +1,40 @@
 <script setup>
 import {onMounted, reactive, ref, watch} from "vue";
 import axios from "axios";
-
-
+import debounce from 'lodash.debounce'
 import CardList from "./components/CardList.vue"
 
 
+
 const characters = ref([]) //{value: []}
+const currentPage = ref(1)
+const totalPages = ref(0);
 const filters = reactive({
   status: '',
-  searchCharacters: ''
+  searchCharacters: '',
 })
-
 const onChangeSelect = (event) => {
-  filters.status= event.target.value
+  filters.status = event.target.value
 }
-
-const onChangeSearchInput = (event) => {
+const onChangeSearchInput = debounce((event) => {
   filters.searchCharacters = event.target.value
+}, 200)
+
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+    fetchCharacters();
+  }
 }
 
-//https://rickandmortyapi.com/api/character/?name=${filters.searchCharacters}&status=${filters.sortBy}
+const previousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    fetchCharacters();
+  }
+}
+
 const fetchCharacters = async () => {
     try{
       const params = {
@@ -29,22 +43,25 @@ const fetchCharacters = async () => {
       if(filters.searchCharacters) {
         params.name = `${filters.searchCharacters}`
       }
-
       const {data} = await axios.get(
-          `https://rickandmortyapi.com/api/character/`,
+          `https://rickandmortyapi.com/api/character/?page=${currentPage.value}`,
           {
-            params
-          }
+            params,
+          },
+
       )
       characters.value = data.results
+      totalPages.value = data.info.pages;
     }catch (error) {
       console.log(error)
     }
 }
 
 
-
+//при монтировании вызови запрос
 onMounted(fetchCharacters)
+
+//при изменении фильтрации вызови запрос
 watch(filters, fetchCharacters)
 
 </script>
@@ -72,16 +89,21 @@ watch(filters, fetchCharacters)
                 class="search-input" type="text"  placeholder="Search character">
           </div>
         </div>
+        <div class="btn-block">
+          <div class="buttons">
+            <button @click="previousPage" class="btn"><</button>
+            <button @click="nextPage" class="btn">></button>
+          </div>
+          <span class="counter">{{ currentPage }}/42</span>
+        </div>
+
         <CardList :characters="characters"/>
+
+
 
       </div>
     </div>
-
-
-
 </template>
-
-
 
 <style scoped>
 .wrapper{
@@ -103,11 +125,7 @@ img{
   border-radius: 10px 0 0 10px;
 }
 
-/*@media  screen and (max-width: 750px){
-  .content {
-    grid-template-columns: 1fr;
-  }
-}*/
+
 
 .filter-block{
   display: flex;
@@ -154,5 +172,34 @@ option{
   color: #39a49b;
   opacity: 0.4;
 }
+.counter{
+  font-size: 16px;
+  font-weight: bold;
+  margin:5px 0 0  5px;
+  color: #f2f2f2;
 
+}
+.btn-block{
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+.buttons{
+  width: 90px;
+  display: flex;
+
+  justify-content:space-between;
+
+}
+.btn{
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 50px;
+  border:1px solid #39a49b;
+  background: rgb(60, 62, 68);
+  color: #39a49b;
+  -webkit-box-shadow: 0 10px 20px -4px rgba(63, 213, 188, 0.26);
+  -moz-box-shadow: 0 10px 20px -4px rgba(63, 213, 188, 0.26);
+  box-shadow: 0 10px 20px -4px rgba(63, 213, 188, 0.26);
+ }
 </style>
