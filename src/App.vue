@@ -4,11 +4,10 @@ import axios from "axios";
 import debounce from 'lodash.debounce'
 import CardList from "./components/CardList.vue"
 
-
-
 const characters = ref([]) //{value: []}
 const currentPage = ref(1)
 const totalPages = ref(0);
+
 const filters = reactive({
   status: '',
   searchCharacters: '',
@@ -48,7 +47,6 @@ const fetchCharacters = async () => {
           {
             params,
           },
-
       )
       characters.value = data.results
       totalPages.value = data.info.pages;
@@ -58,10 +56,8 @@ const fetchCharacters = async () => {
 }
 
 
-//при монтировании вызови запрос
 onMounted(fetchCharacters)
 
-//при изменении фильтрации вызови запрос
 watch(filters, fetchCharacters)
 
 </script>
@@ -77,7 +73,7 @@ watch(filters, fetchCharacters)
 
         <div class="filter-block">
           <select @change="onChangeSelect" class="select">
-            <option value="">All</option>
+            <option value="all">All</option>
             <option value="alive">Alive</option>
             <option value="dead">Dead</option>
             <option value="unknown">Unknown</option>
@@ -176,7 +172,7 @@ option{
   font-size: 16px;
   font-weight: bold;
   margin:5px 0 0  5px;
-  color: #f2f2f2;
+  color: #39a49b;
 
 }
 .btn-block{

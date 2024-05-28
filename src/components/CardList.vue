@@ -19,6 +19,8 @@ defineProps({
         :name="character.name"
         :status="character.status"
         :species="character.species"
+        :location = "character.location"
+        :origin = "character.origin"
     />
 
   </div>
