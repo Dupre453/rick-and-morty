@@ -2,13 +2,10 @@
 <script setup>
 import Card from './Card.vue'
 
-
 defineProps({
   characters: Array
 })
 </script>
-
-
 
 <template>
   <div class="content" >
@@ -22,9 +19,9 @@ defineProps({
         :location = "character.location"
         :origin = "character.origin"
     />
-
   </div>
 </template>
+
 
 <style scoped>
 .content{
