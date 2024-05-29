@@ -10,7 +10,7 @@ defineProps({
 <template>
   <div class="filter-block">
     <select @change="onChangeSelect" class="select">
-      <option value="all">All</option>
+      <option value="">All</option>
       <option value="alive">Alive</option>
       <option value="dead">Dead</option>
       <option value="unknown">Unknown</option>
